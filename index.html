@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singa - Sang Raja Savana</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Playfair Display & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,800;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        amber: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            800: '#92400e',
+                            900: '#78350f',
+                            950: '#451a03',
+                        },
+                        savannah: '#14110f',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0d0c0b;
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gold-glow {
+            box-shadow: 0 0 25px rgba(217, 119, 6, 0.25);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #b45309 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass-panel {
+            background: rgba(26, 22, 18, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(217, 119, 6, 0.15);
+        }
+
+        /* Equalizer Animation for Music */
+        .eq-bar {
+            width: 3px;
+            background-color: #f59e0b;
+            animation: bounce 1.2s infinite ease-in-out alternate;
+        }
+        .eq-bar:nth-child(1) { animation-delay: 0.1s; height: 12px; }
+        .eq-bar:nth-child(2) { animation-delay: 0.4s; height: 20px; }
+        .eq-bar:nth-child(3) { animation-delay: 0.2s; height: 15px; }
+        .eq-bar:nth-child(4) { animation-delay: 0.5s; height: 24px; }
+
+        @keyframes bounce {
+            0% { transform: scaleY(0.3); }
+            100% { transform: scaleY(1); }
+        }
+
+        .paused .eq-bar {
+            animation-play-state: paused;
+            height: 4px !important;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-amber-600 selection:text-white">
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-amber-900/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Brand / Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-700 to-amber-400 flex items-center justify-center text-zinc-950 text-xl font-black shadow-lg shadow-amber-600/30 group-hover:scale-105 transition-transform">
+                        <i class="fa-solid font-bold fa-paw"></i>
+                    </div>
+                    <div>
+                        <span class="font-serif text-2xl font-bold tracking-wider text-amber-100">KING<span class="text-amber-500">LION</span></span>
+                        <span class="block text-[10px] text-amber-400/70 tracking-widest uppercase">Sang Raja Hutan</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav Links -->
+                <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                    <a href="#beranda" class="text-amber-200 hover:text-amber-400 transition-colors">Beranda</a>
+                    <a href="#galeri" class="text-amber-200 hover:text-amber-400 transition-colors">Galeri Foto</a>
+                    <a href="#fakta" class="text-amber-200 hover:text-amber-400 transition-colors">Fakta Singa</a>
+                    <a href="#karakteristik" class="text-amber-200 hover:text-amber-400 transition-colors">Karakteristik</a>
+                    <a href="#kuis" class="text-amber-200 hover:text-amber-400 transition-colors">Kuis Interaktif</a>
+                </div>
+
+                <!-- Audio Controller Widget Header -->
+                <div class="flex items-center gap-3">
+                    <div class="glass-panel px-3 py-1.5 rounded-full flex items-center gap-3 border border-amber-500/30">
+                        <button id="musicToggleBtn" onclick="toggleAudio()" class="w-8 h-8 rounded-full bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center justify-center transition-all shadow-md">
+                            <i id="musicIcon" class="fa-solid fa-play text-xs"></i>
+                        </button>
+                        <div class="hidden sm:block text-left pr-2">
+                            <p class="text-xs text-amber-200 font-semibold line-clamp-1">Musik Latar</p>
+                            <p id="musicStatusText" class="text-[10px] text-zinc-400">Klik untuk putar</p>
+                        </div>
+                        <div id="eqContainer" class="flex items-center gap-0.5 h-6 px-1 paused">
+                            <div class="eq-bar"></div>
+                            <div class="eq-bar"></div>
+                            <div class="eq-bar"></div>
+                            <div class="eq-bar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hidden Audio Tag for User Supplied Music -->
+    <audio id="bgMusic" loop preload="metadata">
+        <source src="https://raw.githubusercontent.com/baliscript539/singa/f6387d00e36af13a81681da5c462609fe1aba268/musik%20new%202.mp3" type="audio/mp3">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+
+    <!-- Hero Section -->
+    <section id="beranda" class="relative pt-32 pb-20 md:pt-44 md:pb-32 overflow-hidden flex items-center justify-center min-h-screen">
+        <!-- Background Ambient Glow -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-amber-600/15 rounded-full blur-[140px] pointer-events-none"></div>
+        <div class="absolute bottom-10 right-10 w-96 h-96 bg-amber-900/20 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest text-amber-400 bg-amber-950/60 border border-amber-500/30 mb-6 shadow-inner">
+                <i class="fa-solid fa-crown text-amber-400"></i> Simbol Keberanian & Kekuatan
+            </span>
+            
+            <h1 class="font-serif text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight mb-6 leading-tight">
+                SINGA <br><span class="gold-gradient-text">RAJA SAVANA</span>
+            </h1>
+            
+            <p class="text-zinc-300 text-lg sm:text-xl max-w-2xl mx-auto mb-10 font-light leading-relaxed">
+                Menjelajahi keagungan pesona singa — predator puncak yang memimpin savana Afrika dengan aura kepemimpinan, keberanian, dan pesona visual tak tertandingi.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#galeri" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-zinc-950 font-bold shadow-lg shadow-amber-600/25 transition-all transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-images mr-2"></i> Lihat Galeri Foto
+                </a>
+                <a href="#fakta" class="w-full sm:w-auto px-8 py-4 rounded-xl glass-panel text-amber-200 hover:text-white hover:bg-zinc-800/80 font-medium border border-amber-500/30 transition-all">
+                    <i class="fa-solid fa-book-open mr-2"></i> Pelajari Fakta
+                </a>
+            </div>
+
+            <!-- Stats Highlight Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 pt-10 border-t border-zinc-800/80">
+                <div class="glass-panel p-4 rounded-xl text-center">
+                    <p class="text-amber-400 font-serif text-3xl font-bold">Panthera leo</p>
+                    <p class="text-xs text-zinc-400 mt-1 uppercase tracking-wider">Nama Ilmiah</p>
+                </div>
+                <div class="glass-panel p-4 rounded-xl text-center">
+                    <p class="text-amber-400 font-serif text-3xl font-bold">190 kg</p>
+                    <p class="text-xs text-zinc-400 mt-1 uppercase tracking-wider">Bobot Rata-rata</p>
+                </div>
+                <div class="glass-panel p-4 rounded-xl text-center">
+                    <p class="text-amber-400 font-serif text-3xl font-bold">8 km</p>
+                    <p class="text-xs text-zinc-400 mt-1 uppercase tracking-wider">Jarak Raungan</p>
+                </div>
+                <div class="glass-panel p-4 rounded-xl text-center">
+                    <p class="text-amber-400 font-serif text-3xl font-bold">80 km/h</p>
+                    <p class="text-xs text-zinc-400 mt-1 uppercase tracking-wider">Kecepatan Lari</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Showcase Section -->
+    <section id="galeri" class="py-20 relative bg-zinc-950/60 border-t border-b border-zinc-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <h2 class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2">Koleksi Visual</h2>
+                <h3 class="font-serif text-3xl sm:text-5xl font-extrabold text-white">Galeri Singa Kesukaan</h3>
+                <p class="text-zinc-400 mt-3">Koleksi potret berkualitas tinggi yang memperlihatkan keindahan dan kegagahan singa.</p>
+            </div>
+
+            <!-- Image Grid (2 Main User Images + Ambient Layout) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                
+                <!-- Image Card 1 -->
+                <div class="glass-panel rounded-2xl overflow-hidden group border border-amber-600/20 hover:border-amber-500/50 transition-all duration-300 shadow-xl">
+                    <div class="relative overflow-hidden aspect-[4/3] bg-zinc-900">
+                        <img 
+                            src="https://raw.githubusercontent.com/baliscript539/singa/d5d0b839f52d2594e8b7344efb70c26b4984a704/singa%202.jpg" 
+                            alt="Singa 2 - Kegagahan Sang Raja"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            onerror="this.onerror=null; this.src='https://placehold.co/800x600/1c1917/f59e0b?text=Singa+2';"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                        <button onclick="openModal('https://raw.githubusercontent.com/baliscript539/singa/d5d0b839f52d2594e8b7344efb70c26b4984a704/singa%202.jpg', 'Kegagahan Sang Raja')" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-zinc-900/80 text-amber-400 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-amber-500 hover:text-zinc-950">
+                            <i class="fa-solid fa-expand"></i>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded bg-amber-950 text-amber-400 border border-amber-800/40">Potret Utama</span>
+                            <span class="text-xs text-zinc-500"><i class="fa-regular fa-image mr-1"></i> Foto 1</span>
+                        </div>
+                        <h4 class="font-serif text-xl font-bold text-amber-100 mb-2">Kegagahan Sang Raja</h4>
+                        <p class="text-zinc-400 text-sm leading-relaxed">
+                            Tatapan tajam dan surai megah yang menjadi simbol kekuasaan tiada tanding di alam liar.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Image Card 2 -->
+                <div class="glass-panel rounded-2xl overflow-hidden group border border-amber-600/20 hover:border-amber-500/50 transition-all duration-300 shadow-xl">
+                    <div class="relative overflow-hidden aspect-[4/3] bg-zinc-900">
+                        <img 
+                            src="https://raw.githubusercontent.com/baliscript539/singa/d5d0b839f52d2594e8b7344efb70c26b4984a704/singa.jpg" 
+                            alt="Singa 1 - Pesona Harimau Savana"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            onerror="this.onerror=null; this.src='https://placehold.co/800x600/1c1917/f59e0b?text=Singa+1';"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                        <button onclick="openModal('https://raw.githubusercontent.com/baliscript539/singa/d5d0b839f52d2594e8b7344efb70c26b4984a704/singa.jpg', 'Pesona Harimau Savana')" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-zinc-900/80 text-amber-400 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-amber-500 hover:text-zinc-950">
+                            <i class="fa-solid fa-expand"></i>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded bg-amber-950 text-amber-400 border border-amber-800/40">Potret Eksklusif</span>
+                            <span class="text-xs text-zinc-500"><i class="fa-regular fa-image mr-1"></i> Foto 2</span>
+                        </div>
+                        <h4 class="font-serif text-xl font-bold text-amber-100 mb-2">Kewibawaan Singa</h4>
+                        <p class="text-zinc-400 text-sm leading-relaxed">
+                            Kombinasi keanggunan alami dan kekuatan fisik luar biasa yang menjadikan hewan ini sangat dikagumi.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Facts Section -->
+    <section id="fakta" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2">Pengetahuan Alami</h2>
+                <h3 class="font-serif text-3xl sm:text-5xl font-extrabold text-white">Fakta Unik Singa</h3>
+                <p class="text-zinc-400 mt-3">Hal-hal menarik yang membuat singa menjadi kucing besar paling istimewa di planet ini.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Fact 1 -->
+                <div class="glass-panel p-8 rounded-2xl border border-amber-500/20 hover:border-amber-500/40 transition-all hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-xl bg-amber-950 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl mb-6 shadow-inner">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h4 class="font-serif text-2xl font-bold text-white mb-3">Satu-satunya Kucing Sosial</h4>
+                    <p class="text-zinc-400 text-sm leading-relaxed">
+                        Berbeda dari keluarga kucing besar lainnya yang menyendiri (soliter), singa hidup dalam kelompok sosial bernama <strong>"Pride"</strong> yang terdiri dari hingga 30 ekor anggota.
+                    </p>
+                </div>
+
+                <!-- Fact 2 -->
+                <div class="glass-panel p-8 rounded-2xl border border-amber-500/20 hover:border-amber-500/40 transition-all hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-xl bg-amber-950 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl mb-6 shadow-inner">
+                        <i class="fa-solid fa-volume-high"></i>
+                    </div>
+                    <h4 class="font-serif text-2xl font-bold text-white mb-3">Raungan Menggelegar</h4>
+                    <p class="text-zinc-400 text-sm leading-relaxed">
+                        Raungan jantan dapat terdengar hingga jarak <strong>8 kilometer</strong>. Suara keras ini berguna untuk menandai wilayah kekuasaan dan berkomunikasi antar anggota kelompok.
+                    </p>
+                </div>
+
+                <!-- Fact 3 -->
+                <div class="glass-panel p-8 rounded-2xl border border-amber-500/20 hover:border-amber-500/40 transition-all hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-xl bg-amber-950 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl mb-6 shadow-inner">
+                        <i class="fa-solid fa-person-hunting"></i>
+                    </div>
+                    <h4 class="font-serif text-2xl font-bold text-white mb-3">Peran Singa Betina</h4>
+                    <p class="text-zinc-400 text-sm leading-relaxed">
+                        Sekitar <strong>80-90% perburuan</strong> dilakukan oleh singa betina (lioness). Mereka berburu secara tim dengan strategi matang untuk menaklukkan mangsa berukuran besar.
+                    </p>
+                </div>
+
+                <!-- Fact 4 -->
+                <div class="glass-panel p-8 rounded-2xl border border-amber-500/20 hover:border-amber-500/40 transition-all hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-xl bg-amber-950 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl mb-6 shadow-inner">
+                        <i class="fa-solid fa-bed"></i>
+                    </div>
+                    <h4 class="font-serif text-2xl font-bold text-white mb-3">Tidur Hingga 20 Jam</h4>
+                    <p class="text-zinc-400 text-sm leading-relaxed">
+                        Untuk menghemat energi di iklim savana yang panas, singa menghabiskan waktu hingga <strong>16 hingga 20 jam sehari</strong> hanya untuk bersantai dan tidur.
+                    </p>
+                </div>
+
+                <!-- Fact 5 -->
+                <div class="glass-panel p-8 rounded-2xl border border-amber-500/20 hover:border-amber-500/40 transition-all hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-xl bg-amber-950 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl mb-6 shadow-inner">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h4 class="font-serif text-2xl font-bold text-white mb-3">Fungsi Surai (*Mane*)</h4>
+                    <p class="text-zinc-400 text-sm leading-relaxed">
+                        Surai tebal pada jantan tidak hanya memikat betina, tetapi juga melindungi leher mereka dari gigitan dan cakaran musuh saat pertarungan memperebutkan wilayah.
+                    </p>
+                </div>
+
+                <!-- Fact 6 -->
+                <div class="glass-panel p-8 rounded-2xl border border-amber-500/20 hover:border-amber-500/40 transition-all hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-xl bg-amber-950 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl mb-6 shadow-inner">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <h4 class="font-serif text-2xl font-bold text-white mb-3">Penglihatan Malam</h4>
+                    <p class="text-zinc-400 text-sm leading-relaxed">
+                        Singa memiliki penglihatan malam hari <strong>6 kali lebih baik</strong> dari manusia, menjadikan mereka pemburu nokturnal yang sangat mematikan di kegelapan malam.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Characteristics Section -->
+    <section id="karakteristik" class="py-20 bg-zinc-950/60 border-t border-b border-zinc-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <div>
+                    <h2 class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2">Perbandingan Spesies</h2>
+                    <h3 class="font-serif text-3xl sm:text-4xl font-extrabold text-white mb-6">Singa Jantan vs Singa Betina</h3>
+                    <p class="text-zinc-400 leading-relaxed mb-8">
+                        Singa memiliki tingkat dimorfisme seksual yang sangat tinggi di mana jantan dan betina memiliki peran serta fisik yang tampak berbeda secara signifikan.
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="glass-panel p-5 rounded-xl border border-amber-500/20 flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 font-bold">
+                                ♂
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg mb-1">Singa Jantan</h4>
+                                <p class="text-zinc-400 text-sm">Berukuran lebih besar (150-250 kg), memiliki surai lebat di sekeliling leher. Bertugas utama menjaga teritorial dan kelompok dari ancaman asing.</p>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-5 rounded-xl border border-amber-500/20 flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 font-bold">
+                                ♀
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg mb-1">Singa Betina</h4>
+                                <p class="text-zinc-400 text-sm">Berukuran lebih lincah (120-185 kg), tanpa surai. Berperan utama sebagai pemburu kelompok serta mengasuh anak-anak singa (*cubs*).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Table / Stat Card -->
+                <div class="glass-panel p-8 rounded-3xl border border-amber-500/30 gold-glow">
+                    <h4 class="font-serif text-2xl font-bold text-amber-300 mb-6 flex items-center gap-3">
+                        <i class="fa-solid fa-clipboard-list text-amber-500"></i> Taksonomi & Klasifikasi
+                    </h4>
+
+                    <ul class="divide-y divide-zinc-800 text-sm">
+                        <li class="py-3 flex justify-between">
+                            <span class="text-zinc-400">Kerajaan (Kingdom)</span>
+                            <span class="font-semibold text-white">Animalia</span>
+                        </li>
+                        <li class="py-3 flex justify-between">
+                            <span class="text-zinc-400">Filum (Phylum)</span>
+                            <span class="font-semibold text-white">Chordata</span>
+                        </li>
+                        <li class="py-3 flex justify-between">
+                            <span class="text-zinc-400">Kelas (Class)</span>
+                            <span class="font-semibold text-white">Mammalia</span>
+                        </li>
+                        <li class="py-3 flex justify-between">
+                            <span class="text-zinc-400">Ordo (Order)</span>
+                            <span class="font-semibold text-white">Carnivora</span>
+                        </li>
+                        <li class="py-3 flex justify-between">
+                            <span class="text-zinc-400">Famili (Family)</span>
+                            <span class="font-semibold text-white">Felidae</span>
+                        </li>
+                        <li class="py-3 flex justify-between">
+                            <span class="text-zinc-400">Genus</span>
+                            <span class="font-semibold text-white">Panthera</span>
+                        </li>
+                        <li class="py-3 flex justify-between">
+                            <span class="text-zinc-400">Status Konservasi</span>
+                            <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-amber-950 text-amber-400 border border-amber-700/50">Rentan (Vulnerable)</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Quiz Section -->
+    <section id="kuis" class="py-20 relative">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2">Uji Pengetahuan</h2>
+                <h3 class="font-serif text-3xl sm:text-4xl font-extrabold text-white">Kuis Singa Interaktif</h3>
+                <p class="text-zinc-400 mt-2 text-sm">Seberapa kenal kamu dengan Sang Raja Hutan?</p>
+            </div>
+
+            <div class="glass-panel p-8 rounded-3xl border border-amber-500/30 relative">
+                <div id="quizContainer">
+                    <div class="flex justify-between items-center mb-6">
+                        <span id="questionNum" class="text-xs font-bold text-amber-400 uppercase tracking-wider">Pertanyaan 1 dari 3</span>
+                        <span id="scoreText" class="text-xs text-zinc-400">Skor: 0</span>
+                    </div>
+
+                    <h4 id="questionText" class="font-serif text-xl sm:text-2xl font-bold text-white mb-6">
+                        Apa nama kelompok sosial yang dibentuk oleh populasi singa?
+                    </h4>
+
+                    <div id="optionsContainer" class="space-y-3">
+                        <!-- Options generated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Quiz Completion Overlay -->
+                <div id="quizResult" class="hidden text-center py-8">
+                    <div class="w-16 h-16 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-3xl mx-auto mb-4">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h4 class="font-serif text-3xl font-bold text-white mb-2">Kuis Selesai!</h4>
+                    <p id="finalScoreText" class="text-amber-300 text-lg mb-6">Kamu menjawab 3 dari 3 pertanyaan dengan benar!</p>
+                    <button onclick="resetQuiz()" class="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold transition-all shadow-lg">
+                        <i class="fa-solid fa-rotate-right mr-2"></i> Coba Lagi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-zinc-950 border-t border-zinc-900 py-12 text-center text-zinc-500 text-sm">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-center items-center gap-3 mb-4">
+                <div class="w-8 h-8 rounded-full bg-amber-500 text-zinc-950 flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-paw"></i>
+                </div>
+                <span class="font-serif font-bold text-lg text-amber-100">KING LION</span>
+            </div>
+            <p class="max-w-md mx-auto text-xs text-zinc-400 mb-6">
+                "Keberanian bukan berarti tidak memiliki rasa takut, melainkan kemampuan untuk bertindak di tengah ketakutan." — Sang Raja Savana.
+            </p>
+            <p>&copy; 2026 Web Statis Singa Kesukaan. Dibuat dengan apresiasi alam liar.</p>
+        </div>
+    </footer>
+
+    <!-- Image Lightbox Modal -->
+    <div id="imageModal" class="fixed inset-0 z-50 bg-black/90 hidden backdrop-blur-md items-center justify-center p-4" onclick="closeModal()">
+        <div class="relative max-w-4xl w-full" onclick="event.stopPropagation()">
+            <button onclick="closeModal()" class="absolute -top-12 right-0 text-white text-2xl hover:text-amber-400 transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" alt="Zoom" class="w-full h-auto max-h-[80vh] object-contain rounded-xl border border-amber-500/30">
+            <p id="modalCaption" class="text-center text-amber-200 font-serif text-lg mt-4"></p>
+        </div>
+    </div>
+
+    <script>
+        /* Audio Player Logic */
+        const bgMusic = document.getElementById('bgMusic');
+        const musicToggleBtn = document.getElementById('musicToggleBtn');
+        const musicIcon = document.getElementById('musicIcon');
+        const musicStatusText = document.getElementById('musicStatusText');
+        const eqContainer = document.getElementById('eqContainer');
+
+        let isPlaying = false;
+
+        function toggleAudio() {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicIcon.className = 'fa-solid fa-play text-xs';
+                musicStatusText.innerText = 'Klik untuk putar';
+                eqContainer.classList.add('paused');
+                isPlaying = false;
+            } else {
+                bgMusic.play().then(() => {
+                    musicIcon.className = 'fa-solid fa-pause text-xs';
+                    musicStatusText.innerText = 'Memutar Musik...';
+                    eqContainer.classList.remove('paused');
+                    isPlaying = true;
+                }).catch(err => {
+                    console.log("Autoplay blocked or audio failed:", err);
+                    alert("Gagal memutar audio. Pastikan tautan musik dapat diakses.");
+                });
+            }
+        }
+
+        /* Image Lightbox Modal */
+        function openModal(src, caption) {
+            const modal = document.getElementById('imageModal');
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modalCaption').innerText = caption;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        /* Interactive Quiz Data & Logic */
+        const quizData = [
+            {
+                q: "Apa nama kelompok sosial tempat singa hidup bersama?",
+                options: ["Pack", "Pride", "Flock", "Herd"],
+                answer: 1
+            },
+            {
+                q: "Berapa jam rata-rata waktu tidur/istirahat singa dalam sehari?",
+                options: ["8-10 Jam", "12-14 Jam", "16-20 Jam", "5-6 Jam"],
+                answer: 2
+            },
+            {
+                q: "Sejauh mana suara raungan keras singa jantan dapat terdengar?",
+                options: ["2 kilometer", "5 kilometer", "8 kilometer", "15 kilometer"],
+                answer: 2
+            }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+
+        function loadQuiz() {
+            const quizContainer = document.getElementById('quizContainer');
+            const quizResult = document.getElementById('quizResult');
+            quizContainer.classList.remove('hidden');
+            quizResult.classList.add('hidden');
+
+            const item = quizData[currentQ];
+            document.getElementById('questionNum').innerText = `Pertanyaan ${currentQ + 1} dari ${quizData.length}`;
+            document.getElementById('scoreText').innerText = `Skor: ${score}`;
+            document.getElementById('questionText').innerText = item.q;
+
+            const optsDiv = document.getElementById('optionsContainer');
+            optsDiv.innerHTML = '';
+
+            item.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left px-5 py-4 rounded-xl glass-panel hover:bg-amber-950/60 hover:border-amber-500/50 text-amber-100 font-medium transition-all flex justify-between items-center group';
+                btn.innerHTML = `<span>${opt}</span> <i class="fa-solid fa-chevron-right text-xs opacity-0 group-hover:opacity-100 text-amber-400 transition-opacity"></i>`;
+                btn.onclick = () => selectAnswer(idx);
+                optsDiv.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(chosenIdx) {
+            if (chosenIdx === quizData[currentQ].answer) {
+                score++;
+            }
+            currentQ++;
+            if (currentQ < quizData.length) {
+                loadQuiz();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            document.getElementById('quizContainer').classList.add('hidden');
+            const quizResult = document.getElementById('quizResult');
+            quizResult.classList.remove('hidden');
+            document.getElementById('finalScoreText').innerText = `Kamu berhasil menjawab ${score} dari ${quizData.length} pertanyaan dengan benar!`;
+        }
+
+        function resetQuiz() {
+            currentQ = 0;
+            score = 0;
+            loadQuiz();
+        }
+
+        // Initialize quiz on load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadQuiz();
+        });
+    </script>
+</body>
+</html>
